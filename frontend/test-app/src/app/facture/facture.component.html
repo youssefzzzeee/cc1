@@ -1,0 +1,68 @@
+<div class="facture-container">
+  <!-- Date section -->
+  <div class="date-section">
+    {{ currentDate | date:'dd/MM/yyyy' }}
+  </div>
+
+  <!-- Client section with dropdown -->
+  <div class="client-section">
+    <h1>Client</h1>
+    <select [(ngModel)]="selectedClient">
+      <option [ngValue]="null">-- Sélectionnez un client --</option>
+      <option *ngFor="let client of clients" [ngValue]="client">{{ client.nom }}</option>
+    </select>
+  </div>
+
+  <!-- Products table -->
+  <div class="products-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Prix unitaire</th>
+          <th>Total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of invoiceItems; let i = index">
+          <td>
+            <select [(ngModel)]="item.produit" (change)="onProductSelected(i, item.produit)">
+              <option [ngValue]="null">-- Sélectionnez un produit --</option>
+              <option *ngFor="let product of products" [ngValue]="product" [disabled]="isProductAlreadyAdded(product) && item.produit?._id !== product._id">
+                {{ product.libelle }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input type="number" [(ngModel)]="item.quantite" min="1" (change)="calculateTotals()">
+          </td>
+          <td>{{ item.produit?.PU | number:'1.2-2' }} {{ currencyCode }}</td>
+          <td>{{ getLineTotal(item) | number:'1.2-2' }} {{ currencyCode }}</td>
+          <td>
+            <button (click)="removeItem(i)" class="remove-btn">-</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button (click)="addItem()" class="add-btn">+</button>
+  </div>
+
+  <!-- Totals section -->
+  <div class="totals-section">
+    <div class="total-row">
+      <span>Total HT:</span>
+      <span class="total-amount">{{ totalHT | number:'1.2-2' }} {{ currencyCode }}</span>
+    </div>
+    <div class="total-row">
+      <span>Total TTC (20%):</span>
+      <span class="total-amount">{{ totalTTC | number:'1.2-2' }} {{ currencyCode }}</span>
+    </div>
+  </div>
+
+  <!-- Actions section -->
+  <div class="actions-section">
+    <button (click)="downloadPdf()" class="pdf-btn" [disabled]="!isValidInvoice()">Télécharger PDF</button>
+  </div>
+</div>

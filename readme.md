@@ -1,9 +1,11 @@
 
 Ajout de jeu de donnée :
-cd /test/backend && node seed.js
+cd /backend && node seed.js
 
 Backend : 
-cd /test/backend && node server.js
+npm install
+cd /backend && node server.js
 
 FrontEnd :
-cd /test/frontend/test-app && ng serve --port 4005
+npm install
+cd /frontend/test-app && ng serve --port 4005
